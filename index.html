@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hashdex Daily Digest</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=PT+Serif:wght@400&family=Public+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --hd-sophisticated-blue: #112539;
+            --hd-sophisticated-slate: #181E1E;
+            --hd-ocean-blue: #4D98F1;
+            --hd-ocean-blue-hover: #3A82D9;
+            --hd-subtle-beige: #F5F3EE;
+            --hd-subtle-blue: #E8EEF5;
+            --hd-teal: #3DB8A0;
+            --hd-coral: #E57373;
+            --hd-white: #FFFFFF;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Public Sans', Arial, sans-serif;
+            background: var(--hd-subtle-beige);
+            color: var(--hd-sophisticated-slate);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Subtle geometric background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(circle at 15% 25%, rgba(77,152,241,0.04) 0%, transparent 50%),
+                radial-gradient(circle at 85% 75%, rgba(61,184,160,0.04) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 520px;
+            padding: 24px;
+        }
+
+        /* Header */
+        .header {
+            background: var(--hd-sophisticated-blue);
+            border-radius: 16px 16px 0 0;
+            padding: 40px 40px 32px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--hd-ocean-blue), var(--hd-teal));
+        }
+
+        .logo-container {
+            margin-bottom: 28px;
+        }
+
+        .logo-container svg {
+            width: 180px;
+            height: auto;
+            opacity: 0.95;
+        }
+
+        .header h1 {
+            font-family: 'PT Serif', Georgia, serif;
+            font-weight: 400;
+            font-size: 26px;
+            color: var(--hd-white);
+            letter-spacing: 0;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 14px;
+            color: rgba(255,255,255,0.6);
+            font-weight: 300;
+            line-height: 1.5;
+        }
+
+        /* Card body */
+        .card {
+            background: var(--hd-white);
+            padding: 36px 40px 40px;
+            border-radius: 0 0 16px 16px;
+            box-shadow: 0 4px 24px rgba(17,37,57,0.06);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 28px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1.5px solid var(--hd-subtle-blue);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px 16px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            background: var(--hd-white);
+            color: var(--hd-sophisticated-slate);
+            transition: all 0.2s ease;
+        }
+
+        .tab:first-child { border-right: 1.5px solid var(--hd-subtle-blue); }
+
+        .tab.active {
+            background: var(--hd-sophisticated-blue);
+            color: var(--hd-white);
+        }
+
+        .tab:not(.active):hover {
+            background: var(--hd-subtle-blue);
+        }
+
+        /* Digest selector */
+        .digest-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .digest-options label {
+            font-size: 13px;
+            font-weight: 400;
+            color: var(--hd-sophisticated-slate);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            padding: 12px 14px;
+            border-radius: 8px;
+            border: 1.5px solid #E2E6EB;
+            transition: all 0.15s ease;
+        }
+
+        .digest-options label:hover {
+            border-color: var(--hd-ocean-blue);
+            background: rgba(77,152,241,0.03);
+        }
+
+        .digest-options input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--hd-ocean-blue);
+            flex-shrink: 0;
+        }
+
+        .digest-name {
+            font-weight: 500;
+            display: block;
+        }
+
+        .digest-desc {
+            font-size: 12px;
+            color: #8A94A0;
+            display: block;
+            margin-top: 2px;
+        }
+
+        /* Form */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label.field-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--hd-sophisticated-slate);
+            margin-bottom: 8px;
+        }
+
+        .email-input-group {
+            display: flex;
+            align-items: center;
+            border: 1.5px solid #E2E6EB;
+            border-radius: 8px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            overflow: hidden;
+        }
+
+        .email-input-group:focus-within {
+            border-color: var(--hd-ocean-blue);
+            box-shadow: 0 0 0 3px rgba(77,152,241,0.1);
+        }
+
+        .email-input-group input[type="text"] {
+            flex: 1;
+            min-width: 0;
+            padding: 13px 0 13px 16px;
+            border: none;
+            font-family: 'Public Sans', Arial, sans-serif;
+            font-size: 15px;
+            color: var(--hd-sophisticated-slate);
+            outline: none;
+            background: transparent;
+        }
+
+        .email-input-group input[type="text"]::placeholder {
+            color: #B8BFC7;
+        }
+
+        .email-suffix {
+            padding: 13px 16px 13px 2px;
+            font-family: 'Public Sans', Arial, sans-serif;
+            font-size: 15px;
+            color: #8A94A0;
+            white-space: nowrap;
+            user-select: none;
+            pointer-events: none;
+        }
+
+        /* Submit button */
+        .btn-submit {
+            width: 100%;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Public Sans', Arial, sans-serif;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-subscribe {
+            background: var(--hd-ocean-blue);
+            color: var(--hd-white);
+        }
+
+        .btn-subscribe:hover { background: var(--hd-ocean-blue-hover); }
+
+        .btn-unsubscribe {
+            background: var(--hd-white);
+            color: var(--hd-coral);
+            border: 1.5px solid var(--hd-coral);
+        }
+
+        .btn-unsubscribe:hover {
+            background: rgba(229,115,115,0.06);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Feedback messages */
+        .feedback {
+            margin-top: 16px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: none;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .feedback.success {
+            background: rgba(61,184,160,0.08);
+            color: #2A8F7A;
+            border: 1px solid rgba(61,184,160,0.2);
+            display: block;
+        }
+
+        .feedback.error {
+            background: rgba(229,115,115,0.08);
+            color: #C05050;
+            border: 1px solid rgba(229,115,115,0.2);
+            display: block;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 12px;
+            color: #A0A8B2;
+        }
+
+        /* Responsive */
+        @media (max-width: 560px) {
+            .container { padding: 16px; }
+            .header { padding: 32px 24px 24px; }
+            .card { padding: 28px 24px 32px; }
+            .header h1 { font-size: 22px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo-container">
+                <svg viewBox="0 0 345 77" xmlns="http://www.w3.org/2000/svg">
+                    <g><g>
+                        <path fill="#FFFFFF" d="M33.197,0L0,19.268v38.465L33.197,77l33.198-19.268V19.268L33.197,0z M31.279,53.729H6.714 l12.248-21.271l12.32,7.19v14.081L31.279,53.729z M33.197,36.315l-12.32-7.19l12.32-21.493l12.32,21.493L33.197,36.315z M47.363,32.461l12.248,21.271H35.043V39.578l12.32-7.114V32.461z M36.888,6.522l23.755,13.785l-11.877,6.891L36.888,6.522z M17.559,27.272L5.682,20.304L29.437,6.522L17.559,27.275L17.559,27.272z M15.641,30.534L3.764,51.21V23.64l11.877,6.891V30.534z M31.279,57.51v13.932L7.227,57.51L31.279,57.51z M35.043,57.51h24.052L35.043,71.518L35.043,57.51z M50.684,30.534l11.877-6.891 v27.57L50.684,30.537V30.534z"/>
+                        <g>
+                            <path fill="#FFFFFF" fill-rule="evenodd" clip-rule="evenodd" d="M273.598,55.668c-0.027-7.983,0.031-38.096,0.119-41.322 c-1.275-0.436-10.603,1.97-12.039,2.229v1.174c3.764,1.274,4.59,1.281,4.441,7.455h-0.058v7.836 c-10.019-6.748-23.174,2.061-22.61,14.291c-0.504,15.054,14.451,21.658,22.495,10.977l0.525,0.058l-0.176,4.577 c1.217,0.299,10.839-1.351,12.272-1.528v-2.113c-2.304-0.403-5.248-0.351-4.966-3.638L273.598,55.668z M266.061,53.028 c0,2.701-1.226,5.046-6.019,5.046c-14.566,0.064-10.116-34.092,6.019-22.195V53.028z"/>
+                            <path fill="#FFFFFF" fill-rule="evenodd" clip-rule="evenodd" d="M295.684,30.607c-19.314-0.134-19.623,33.644-0.643,32.693 c4.732,0,10.047-1.585,13.027-7.043l-1.517-1.82c-6.147,8.242-19.417,3.006-17.833-9.782c0.595,0.058,18.686,0.089,19.821,0.098 C309.021,37.489,304.939,30.623,295.684,30.607z M300.535,42.109c-1.521,0-10.327,0-11.674-0.009 C289.04,30.449,301.6,29.869,300.535,42.109z"/>
+                            <path fill="#FFFFFF" fill-rule="evenodd" clip-rule="evenodd" d="M119.525,17.517V20.1c2.413,0.634,6.529,0.375,6.253,3.757 v14.087h-19.435V23.857c-0.283-3.33,3.861-3.141,6.252-3.757v-2.583c-5.248,0.278-15.789,0.278-21.035,0V20.1 c2.416,0.643,6.565,0.375,6.311,3.757V39.88v16.493c0.392,3.11-4.043,3.153-6.311,3.699v2.583c5.248-0.278,15.789-0.278,21.035,0 v-2.583c-2.279-0.573-6.659-0.521-6.252-3.699c0,0,0-5.4,0-15.319h19.435v15.319c0.413,3.122-3.988,3.153-6.253,3.699v2.583 c5.248-0.278,15.79-0.278,21.035,0v-2.583c-2.283-0.601-6.696-0.515-6.31-3.699c0,0,0-5.986,0-16.493V23.857 c-0.319-3.296,3.964-3.15,6.31-3.757v-2.583C135.312,17.795,124.77,17.795,119.525,17.517z"/>
+                            <path fill="#FFFFFF" fill-rule="evenodd" clip-rule="evenodd" d="M343.479,60.071c-2.28-0.646-3.272-1.29-4.441-3.052 l-7.576-11.501c5.728-6.653,6.347-10.08,12.952-11.977V31.37c-3.133,0.29-9.425,0.268-12.561,0v2.171 c2.174,0.497,4.441,0.726,2.629,3.403c0.024-0.097-3.102,4.754-4.571,6.214c-0.647-1.271-4.787-6.556-4.778-7.919 c-0.167-1.271,2.65-1.433,3.564-1.701v-2.171c-4.201,0.271-12.633,0.284-16.828,0v2.171c2.167,0.814,4.419,1.522,5.667,3.522 l7.245,10.681c-7.716,9.141-6.265,10.708-14.023,12.855v2.171c3.254-0.323,9.983-0.235,13.264,0v-2.171 c-1.092-0.299-3.627-0.753-3.448-1.936c0.595-2.192,3.767-5.9,5.725-8.568c0.768,1.445,5.281,7.37,5.375,8.922 c0.128,1.21-2.698,1.265-3.505,1.528v2.171c4.112-0.207,12.775-0.348,16.827,0v-2.171L343.479,60.071z"/>
+                            <path fill="#FFFFFF" fill-rule="evenodd" clip-rule="evenodd" d="M217.157,36.568c8.132-3.952,12.563-0.525,12.096,8.653 c-0.146,4.83,1.005,15.02-3.096,14.849l-1.579,0.47v2.171c4.229-0.278,12.719-0.278,16.944,0v-2.171 c-2.186-0.61-5.115-0.817-4.79-3.522c0,0,0.115-10.33,0.115-15.73c0.407-11.91-12.135-12.837-19.69-7.443V14.349 c-1.287-0.439-10.423,1.964-11.862,2.229v1.174c3.785,1.244,4.438,1.241,4.322,7.455v31.87c0.252,2.412-2.298,2.708-4.322,3.522 v2.171c4.07-0.278,12.235-0.28,16.303,0v-2.171c-2.161-0.543-4.881-0.738-4.499-3.522L217.157,36.568z"/>
+                            <path fill="#FFFFFF" fill-rule="evenodd" clip-rule="evenodd" d="M192.704,43.688c-3.442-1.579-6.571-3.016-6.571-6.214 c0-2.994,2.279-4.168,5.199-4.168c1.928,0,3.973,0.82,4.383,2.055l1.579,4.93l2.513-0.058c0.058-2.641,0.234-5.986,0.701-8.217 c-2.161-0.823-6.954-1.351-9.992-1.351c-13.805-0.281-15.332,15.02-2.589,18.764c3.587,1.622,6.914,3.128,6.914,6.592 c0,2.348-1.578,4.638-5.376,4.638c-5.375,0.226-6.271-4.629-7.594-8.394l-2.805,0.116c0.234,3.168,0,9.215,0,9.215 c5.242,2.345,22.847,4.01,22.495-8.041c0-5.806-4.656-7.94-8.854-9.867L192.704,43.688z"/>
+                            <path fill="#FFFFFF" fill-rule="evenodd" clip-rule="evenodd" d="M171.351,58.955c-4.229-0.351-2.28-5.528-2.465-9.333 c0.728-9.504,1.472-19.353-10.624-19.017c-7.011,0-12.912,2.406-12.912,6.751c0,2.759,2.395,4.577,4.908,4.988l2.453-1.232v-5.87 c0-1.936,1.927-2.171,3.621-2.171c6.289-0.226,4.996,7.172,5.142,11.669c-32.491,3.272-10.694,29.528,0.057,13.63 c0.261,6.367,10.791,6.226,12.913,1.232l-0.644-1.585c-0.41,0.47-1.636,0.939-2.455,0.939L171.351,58.955z M161.358,54.318 c-0.057,2.759-2.279,4.403-4.674,4.403c-3.154,0-4.908-2.171-4.908-5.046c0.057-4.476,6.11-5.986,9.695-6.415l-0.113,7.062 V54.318z"/>
+                        </g>
+                    </g></g>
+                </svg>
+            </div>
+            <h1>Daily Digest</h1>
+            <p>Mantenha-se atualizado com as notícias que importam</p>
+        </div>
+
+        <!-- Card body -->
+        <div class="card">
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab active" data-action="subscribe" onclick="switchTab('subscribe')">Inscrever-se</button>
+                <button class="tab" data-action="unsubscribe" onclick="switchTab('unsubscribe')">Cancelar inscrição</button>
+            </div>
+
+            <!-- Digest selection -->
+            <div class="digest-options">
+                <label>
+                    <input type="checkbox" id="digest-market" value="market" checked>
+                    <span>
+                        <span class="digest-name">📊 Market Digest</span>
+                        <span class="digest-desc">Mercados, cripto, geopolítica e macro (seg a sex, 7:15 BRT)</span>
+                    </span>
+                </label>
+                <label>
+                    <input type="checkbox" id="digest-ai" value="ai">
+                    <span>
+                        <span class="digest-name">🤖 AI Digest</span>
+                        <span class="digest-desc">Inteligência artificial, modelos e aplicações (seg a sex, 7:30 BRT)</span>
+                    </span>
+                </label>
+            </div>
+
+            <!-- Email input -->
+            <div class="form-group">
+                <label class="field-label" for="email">Email corporativo</label>
+                <div class="email-input-group">
+                    <input type="text" id="email" placeholder="nome" autocomplete="username" spellcheck="false">
+                    <span class="email-suffix">@hashdex.com</span>
+                </div>
+            </div>
+
+            <!-- Submit button -->
+            <button class="btn-submit btn-subscribe" id="submitBtn" onclick="handleSubmit()">
+                Inscrever-se
+            </button>
+
+            <!-- Feedback -->
+            <div class="feedback" id="feedback"></div>
+        </div>
+
+        <div class="footer">
+            Hashdex &mdash; Crypto Asset Management
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        // CONFIGURATION
+        // Replace this URL with your deployed Google Apps Script Web App URL
+        // ============================================================
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzUPt5FjXrzEYC9CSI_meoTspvwN5Hj5fb1YrRzqib38H0oLXmbV5F318CWLRYR857UJQ/exec';
+
+        let currentAction = 'subscribe';
+
+        function switchTab(action) {
+            currentAction = action;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelector(`[data-action="${action}"]`).classList.add('active');
+
+            const btn = document.getElementById('submitBtn');
+            btn.className = 'btn-submit ' + (action === 'subscribe' ? 'btn-subscribe' : 'btn-unsubscribe');
+            btn.textContent = action === 'subscribe' ? 'Inscrever-se' : 'Cancelar inscrição';
+
+            clearFeedback();
+        }
+
+        function clearFeedback() {
+            const fb = document.getElementById('feedback');
+            fb.className = 'feedback';
+            fb.style.display = 'none';
+        }
+
+        function showFeedback(message, type) {
+            const fb = document.getElementById('feedback');
+            fb.textContent = message;
+            fb.className = `feedback ${type}`;
+            fb.style.display = 'block';
+        }
+
+        function getSelectedDigests() {
+            const digests = [];
+            if (document.getElementById('digest-market').checked) digests.push('market');
+            if (document.getElementById('digest-ai').checked) digests.push('ai');
+            return digests;
+        }
+
+        async function handleSubmit() {
+            const username = document.getElementById('email').value.trim().toLowerCase().replace(/@.*$/, '');
+            const email = username + '@hashdex.com';
+            const digests = getSelectedDigests();
+            const btn = document.getElementById('submitBtn');
+
+            // Validation
+            if (!username) {
+                showFeedback('Por favor, insira seu nome de usuário.', 'error');
+                return;
+            }
+
+            if (!/^[a-z0-9._-]+$/.test(username)) {
+                showFeedback('Nome de usuário inválido. Use apenas letras, números, pontos ou hífens.', 'error');
+                return;
+            }
+
+            if (digests.length === 0) {
+                showFeedback('Selecione ao menos um digest.', 'error');
+                return;
+            }
+
+            // Submit
+            btn.disabled = true;
+            btn.textContent = 'Processando...';
+            clearFeedback();
+
+            try {
+                const response = await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: currentAction,
+                        email: email,
+                        digests: digests
+                    })
+                });
+
+                // With no-cors mode, we can't read the response
+                // so we show an optimistic success message
+                if (currentAction === 'subscribe') {
+                    showFeedback(
+                        `✓ Inscrição enviada para ${email}. Você receberá o próximo digest!`,
+                        'success'
+                    );
+                } else {
+                    showFeedback(
+                        `✓ Solicitação de cancelamento enviada para ${email}.`,
+                        'success'
+                    );
+                }
+
+                document.getElementById('email').value = '';
+
+            } catch (err) {
+                showFeedback('Erro ao processar. Tente novamente ou contate o administrador.', 'error');
+                console.error('Submit error:', err);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = currentAction === 'subscribe' ? 'Inscrever-se' : 'Cancelar inscrição';
+            }
+        }
+
+        // Enter key support
+        document.getElementById('email').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') handleSubmit();
+        });
+    </script>
+</body>
+</html>
